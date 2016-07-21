@@ -1,0 +1,16 @@
+$width:80%;
+@mixin div-mar{
+  width: $width;
+  margin: auto;
+  margin-top: 15px;
+}
+.box {
+  @include div-mar;
+  textarea {
+    @include div-mar;
+    resize: both;
+    overflow: auto;
+  }
+
+}
+
