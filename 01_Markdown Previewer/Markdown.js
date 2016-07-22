@@ -4,11 +4,17 @@ var Begin = React.createClass({
    },
     textChange:function () {
         this.setState({textValue:this.refs.text.value});
+    },
+    getMark:function () {
+        return marked(this.state.textValue);
+    },
+    componentDidMount:function () {
         var marke=this.getMark();
         this.refs.mark.innerHTML=marke;
     },
-    getMark:function () {
-        return marked(this.state.textValue, {sanitize: true});
+    componentDidUpdate:function () {
+        var marke=this.getMark();
+        this.refs.mark.innerHTML=marke;
     },
     render:function () {
         var value = this.state.textValue;

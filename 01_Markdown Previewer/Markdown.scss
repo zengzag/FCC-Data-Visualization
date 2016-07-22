@@ -4,6 +4,7 @@ $width:80%;
   margin: auto;
   margin-top: 15px;
 }
+
 .box {
   @include div-mar;
   textarea {
@@ -11,6 +12,5 @@ $width:80%;
     resize: both;
     overflow: auto;
   }
-
 }
 
