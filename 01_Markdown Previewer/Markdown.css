@@ -1,0 +1,12 @@
+.box {
+  width: 80%;
+  margin: auto;
+  margin-top: 15px; }
+  .box textarea {
+    width: 80%;
+    margin: auto;
+    margin-top: 15px;
+    resize: both;
+    overflow: auto; }
+
+/*# sourceMappingURL=Markdown.css.map */
