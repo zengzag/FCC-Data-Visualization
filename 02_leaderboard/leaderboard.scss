@@ -1,0 +1,66 @@
+$color-fcc: #4caf50;
+
+body {
+  background-color: #f6f4f0;
+}
+
+.FCC {
+  background-color: $color-fcc;
+  a {
+    color: white;
+    span {
+      font-size: 36px;
+      font-weight: 700;
+      margin-left: 15px;
+    }
+  }
+}
+
+.table-box {
+  margin: 25px 40px;
+  .table-head {
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    background-color: $color-fcc;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+}
+
+table {
+  width: 100%;
+  background-color: #f0f3f3;
+  th{
+    font-size: 20px;
+    font-weight: 700;
+  }
+  tbody tr td {
+      font-size: 18px;
+      font-weight: 500;
+      overflow: hidden;
+    }
+  .count {
+    width: 6%;
+    text-align: center;
+  }
+  .name {
+    width: 40%;
+  }
+  .recent {
+    width: 26%;
+    text-align: center;
+  }
+  .all {
+    width: 26%;
+    text-align: center;
+  }
+}
+
+img {
+  width: 25px;
+  border: 2px solid gray;
+  border-radius: 4px;
+  max-height: 25px;
+}
