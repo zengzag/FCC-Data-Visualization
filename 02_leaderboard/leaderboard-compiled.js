@@ -23,24 +23,75 @@ var Fcc = React.createClass({
 var Table = React.createClass({
     displayName: "Table",
 
-
     getInitialState: function getInitialState() {
-        return { tbodyValue: [] };
+        return { getValue: [] };
     },
 
     getTbody: function getTbody(url) {
         $.ajax({
             url: url,
-            dataType: 'jsonp',
+            dataType: 'json',
             cache: false,
             success: function (data) {
-                var Value = data;
-                this.setState({ tbodyValue: Value });
+                var Value = [];
+                for (var i in data) {
+                    var userUrl = "http://www.freecodecamp.com/" + data[i].username;
+                    var temp = React.createElement(
+                        "tr",
+                        { key: i },
+                        React.createElement(
+                            "td",
+                            { className: "count" },
+                            " ",
+                            i
+                        ),
+                        React.createElement(
+                            "td",
+                            { className: "name" },
+                            React.createElement(
+                                "a",
+                                { href: userUrl, target: "_blank" },
+                                React.createElement("img", { src: data[i].img }),
+                                React.createElement(
+                                    "span",
+                                    null,
+                                    data[i].username
+                                )
+                            )
+                        ),
+                        React.createElement(
+                            "td",
+                            { className: "recent" },
+                            data[i].recent
+                        ),
+                        React.createElement(
+                            "td",
+                            { className: "all" },
+                            data[i].alltime
+                        )
+                    );
+                    Value.push(temp);
+                }
+                this.setState({ getValue: Value });
             }.bind(this)
         });
     },
 
+    recent: function recent() {
+        this.getTbody('http://fcctop100.herokuapp.com/api/fccusers/top/recent');
+    },
+
+    alltime: function alltime() {
+        this.getTbody('http://fcctop100.herokuapp.com/api/fccusers/top/alltime');
+    },
+
+    componentWillMount: function componentWillMount() {
+        this.recent();
+    },
+
     render: function render() {
+        var Value = this.state.getValue;
+        console.log(Value);
         return React.createElement(
             "div",
             { className: "table-box" },
@@ -70,12 +121,12 @@ var Table = React.createClass({
                         ),
                         React.createElement(
                             "th",
-                            { className: "recent", onClick: this.getTbody('http://fcctop100.herokuapp.com/api/fccusers/top/recent') },
+                            { className: "recent", onClick: this.recent },
                             "Points in past 30 days"
                         ),
                         React.createElement(
                             "th",
-                            { className: "all", onClick: this.getTbody() },
+                            { className: "all", onClick: this.alltime },
                             "All time points"
                         )
                     )
@@ -83,39 +134,7 @@ var Table = React.createClass({
                 React.createElement(
                     "tbody",
                     null,
-                    React.createElement(
-                        "tr",
-                        null,
-                        React.createElement(
-                            "td",
-                            { className: "count" },
-                            "1"
-                        ),
-                        React.createElement(
-                            "td",
-                            { className: "name" },
-                            React.createElement(
-                                "a",
-                                { href: "http://www.freecodecamp.com/Takumar", target: "_blank" },
-                                React.createElement("img", { src: "https://avatars.githubusercontent.com/u/2951935?v=3" }),
-                                React.createElement(
-                                    "span",
-                                    null,
-                                    "Takumar"
-                                )
-                            )
-                        ),
-                        React.createElement(
-                            "td",
-                            { className: "recent" },
-                            this.tbodyValue
-                        ),
-                        React.createElement(
-                            "td",
-                            { className: "all" },
-                            "177"
-                        )
-                    )
+                    Value
                 )
             )
         );

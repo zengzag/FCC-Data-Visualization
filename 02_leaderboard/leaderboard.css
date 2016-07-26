@@ -47,6 +47,7 @@ img {
   width: 25px;
   border: 2px solid gray;
   border-radius: 4px;
-  max-height: 25px; }
+  max-height: 25px;
+  margin-right: 5px; }
 
 /*# sourceMappingURL=leaderboard.css.map */
