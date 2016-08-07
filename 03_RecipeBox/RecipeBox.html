@@ -12,73 +12,9 @@
     <link rel="stylesheet" href="RecipeBox.css"/>
 </head>
 <body>
+
 <div class="container">
-    <div id="panels">
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseOne">
-                            菜单一
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">Nihil anim keffiyeh helvetica</li>
-                            <li class="list-group-item">labore Window</li>
-                            <li class="list-group-item">sapiente</li>
-                            <li class="list-group-item">anderson</li>
-                            <li class="list-group-item">helvetica</li>
-                        </ul>
-                        <div id="edit">
-                            <button type="button" class="btn btn-default btn-success">
-                                编辑
-                            </button>
-                            <button type="button" class="btn btn-default btn-danger">
-                                删除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="Add">
-        <button type="button" class="btn btn-default btn-success" data-toggle="modal" data-target="#myModal">
-            添加
-        </button>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close"
-                                data-dismiss="modal" aria-hidden="true">
-                            &times;
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">
-                            模态框（Modal）标题
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <Input type="text" placeholder="Recipe Name" id="name"/>
-                        <textarea rows="5" cols="30" placeholder="food" id="food"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal">关闭
-                        </button>
-                        <button type="button" class="btn btn-primary">
-                            提交更改
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
 <script src="RecipeBox-compiled.js"></script>
