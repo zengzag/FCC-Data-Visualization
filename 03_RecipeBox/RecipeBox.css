@@ -1,11 +1,15 @@
-#name {
+#inputName {
   display: block;
   width: 100%;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: 700; }
 
-#food {
+#inputFood {
   display: block;
   width: 100%;
-  resize: vertical; }
+  resize: vertical;
+  font-size: 16px;
+  font-weight: 500; }
 
 /*# sourceMappingURL=RecipeBox.css.map */
