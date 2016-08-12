@@ -14,7 +14,30 @@
 <body>
 
 <div class="container">
-
+    <div class="map" id="map">
+        <div class="live"></div>
+        <div class="dead"></div>
+    </div>
+    <div class="menu">
+        <div class="speed">
+            <span>speed:</span>
+            <button class="btn btn-default" id="fast">fast</button>
+            <button class="btn btn-default" id="medium">medium</button>
+            <button class="btn btn-default" id="slow">slow</button>
+        </div>
+        <div class="control">
+            <span>control:</span>
+            <button class="btn btn-default" id="Run">Run</button>
+            <button class="btn btn-default" id="Pause">Pause</button>
+            <button class="btn btn-default" id="Clear">Clear</button>
+        </div>
+        <div class="size">
+            <span>size:</span>
+            <button class="btn btn-default" id="size50">50x30</button>
+            <button class="btn btn-default" id="size70">70x50</button>
+            <button class="btn btn-default" id="size100">100x80</button>
+        </div>
+    </div>
 </div>
 
 <script src="GameOfLife-compiled.js"></script>
