@@ -1,3 +1,64 @@
+body {
+  background-color: lightgray; }
 
+.active {
+  border-color: white;
+  color: red; }
+
+.menu {
+  background-color: #3b3b3b;
+  margin: auto;
+  border-radius: 30px;
+  width: 800px; }
+  .menu div {
+    margin-left: 30px; }
+    .menu div p {
+      display: inline-block;
+      color: white;
+      width: 100px;
+      font-size: larger;
+      font-weight: 700; }
+    .menu div button {
+      width: 150px;
+      height: 30px;
+      margin: 2px 5px;
+      border-radius: 5px;
+      background-color: skyblue;
+      font-size: medium;
+      font-weight: 500; }
+
+.map {
+  width: 750px;
+  height: 450px;
+  margin: auto;
+  border: 10px solid #3b3b3b;
+  border-radius: 5px;
+  background-color: black; }
+
+.dead {
+  float: left;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #3b3b3b; }
+
+.live {
+  float: left;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #3b3b3b;
+  background-color: skyblue; }
+
+.stay {
+  float: left;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #3b3b3b;
+  background-color: #527ad0; }
 
 /*# sourceMappingURL=GameOfLife.css.map */
