@@ -11,16 +11,16 @@ body {
   border-radius: 30px;
   width: 800px;
   div {
-    margin-left: 30px;
     p {
       display: inline-block;
       color: white;
-      width: 100px;
+      width: 90px;
+      margin-left: 30px;
       font-size: larger;
       font-weight: 700;
     }
     button{
-      width: 150px;
+      width: 130px;
       height: 30px;
       margin: 2px 5px;
       border-radius: 5px;
@@ -28,11 +28,13 @@ body {
       font-size: medium;
       font-weight: 500;
     }
+    #generation{
+      text-align: center;
+    }
   }
 }
-.map{
-  width: 750px;
-  height: 450px;
+.grid{
+
   margin: auto;
   border: 10px solid #3b3b3b;
   border-radius: 5px;
