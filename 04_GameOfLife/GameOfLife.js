@@ -6,6 +6,7 @@ var speed = 100;//速度，毫秒
 var gridWidth = 50;//地图宽（列）
 var gridHeight = 30;//地图高（行）
 var generation = 0;//运行世代数
+var canIteration = false;//是否允许迭代，用来实现暂停、停止功能
 
 var GridSquare = React.createClass({
     //地图组件
@@ -53,6 +54,7 @@ function randomGrid() {
             var temp = Math.random();
             var index = i * gridWidth + j;
             if (temp > 0.9) {
+                //系数，控制随机点的个数
                 grid[index] = 'live';
             } else {
                 grid[index] = 'dead';
@@ -92,9 +94,9 @@ function nextGrid() {
             }
         }
     }
-    if(countDead>=num){
+    if (countDead >= num) {
         updateGrid();
-        alert('进行了'+generation+'次迭代后灭绝');
+        alert('进行了' + generation + '次迭代后灭绝');
         $('#clear').click();
     }
 }
@@ -157,23 +159,112 @@ function countCell(i, j) {
     return count;
 }
 
+function iteration() {
+    //迭代运行
+    if (canIteration) {
+        setTimeout(function () {
+            nextGrid();
+            updateGrid();
+            iteration();
+        }, speed);
+    }
+}
+
 $('#run').click(function () {
-    nextGrid();
-    updateGrid();
+    $('#pause').removeClass('active');
+    $('#run').addClass('active');
+    canIteration = true;//允许迭代
+    iteration();
+});
+
+$('#pause').click(function () {
+    $('#run').removeClass('active');
+    $('#pause').addClass('active');
+    canIteration = false;//停止迭代
+
 });
 
 $('#clear').click(function () {
     //将每个元素设置为死亡，代数清零
-    var num = gridHeight * gridWidth;
-    for (var index = 0; index < num; index++) {
-        grid[index] = 'dead';
-    }
-    generation = 0;
-    updateGrid();
+    canIteration = false;//停止迭代
+    setTimeout(function () {
+        grid.splice(0);
+        var num = gridHeight * gridWidth;
+        for (var index = 0; index < num; index++) {
+            grid[index] = 'dead';
+        }
+        generation = 0;
+        updateGrid();
+    }, speed);//最后一次迭代运行后再执行清零
+});
+
+$('#random').click(function () {
+    $('#clear').click();
+    setTimeout(function () {
+        randomGrid();
+        updateGrid();
+        $('#pause').click();
+    }, speed);
+});
+
+$('#fast').click(function () {
+    $('#medium').removeClass('active');
+    $('#slow').removeClass('active');
+    $('#fast').addClass('active');
+    speed = 50;//设置速度50ms
+});
+
+$('#medium').click(function () {
+    $('#fast').removeClass('active');
+    $('#slow').removeClass('active');
+    $('#medium').addClass('active');
+    speed = 100;//设置速度100ms
+});
+
+$('#slow').click(function () {
+    $('#fast').removeClass('active');
+    $('#medium').removeClass('active');
+    $('#slow').addClass('active');
+    speed = 300;//设置速度300ms
+});
+
+$('#size50').click(function () {
+    $('#size70').removeClass('active');
+    $('#size100').removeClass('active');
+    $('#size50').addClass('active');
+    canIteration = false;//停止迭代
+    setTimeout(function () {
+        gridWidth = 50;//地图宽（列）
+        gridHeight = 30;//地图高（行）
+        $('#random').click();
+    }, speed);
 });
 
 
+$('#size70').click(function () {
+    $('#size50').removeClass('active');
+    $('#size100').removeClass('active');
+    $('#size70').addClass('active');
+    canIteration = false;//停止迭代
+    setTimeout(function () {
+        gridWidth = 70;//地图宽（列）
+        gridHeight = 40;//地图高（行）
+        $('#random').click();
+    }, speed);
+});
+
+$('#size100').click(function () {
+    $('#size50').removeClass('active');
+    $('#size70').removeClass('active');
+    $('#size100').addClass('active');
+    canIteration = false;//停止迭代
+    setTimeout(function () {
+        gridWidth = 100;//地图宽（列）
+        gridHeight = 60;//地图高（行）
+        $('#random').click();
+    }, speed);
+});
+
 $(document).ready(function () {
-    randomGrid();
-    updateGrid();
+    $('#random').click();
 });

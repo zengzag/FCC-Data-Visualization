@@ -1,6 +1,12 @@
 body {
   background-color: lightgray; }
 
+.attention {
+  margin: 10px;
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center; }
+
 .active {
   border-color: white;
   color: red; }
