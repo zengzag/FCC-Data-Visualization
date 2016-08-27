@@ -14,14 +14,14 @@ body {
     margin-left: 50px; }
 
 .row {
-  width: 1600px;
-  height: 20px;
+  width: 1200px;
+  height: 15px;
   margin: 0; }
 
 .cell {
   float: left;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   margin: 0;
   padding: 0;
   background-color: white; }
