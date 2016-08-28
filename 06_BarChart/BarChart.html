@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bar Chart</title>
+    <!--<script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.js"></script>-->
+    <!--<script src="http://cdn.bootcss.com/d3/4.2.2/d3.js"></script>-->
+    <script src="jquery.js"></script>
+    <script src="d3.js"></script>
+
+</head>
+<body>
+<style>
+    body {
+        background-color: #dfdfdf;
+    }
+
+    .board {
+        margin: auto;
+        margin-top: 50px;
+        background-color: white;
+        text-align: center;
+        width: 1200px;
+        border-radius: 8px;
+        box-shadow: 3px 3px 5px #888888;
+        position: relative;
+    }
+
+    .head {
+        Padding-top: 20px;
+        color: #5fa0bd;
+    }
+
+    .detail {
+        position: absolute;
+        top: 10px;
+        left: 800px;
+        font-size: 20px;
+        font-weight: 500;
+        color: white;
+    }
+
+    .foot {
+        Padding: 10px 30px;
+        color: #5fa0bd;
+        font-size: xx-small;
+    }
+
+    svg {
+        width: 1100px;
+        height: 500px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 15px;
+    }
+
+    .MyRect {
+        fill: steelblue;
+    }
+
+    .focus {
+        fill: #dfdfdf;
+    }
+</style>
+
+<div class="board">
+    <h1 class="head">美国 GDP 统计数据</h1>
+    <p class="detail"></p>
+    <svg></svg>
+    <div class="foot"></div>
+</div>
+
+<script>
+    $('document').ready(function () {
+        //d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json',function (d) {
+        d3.json('data.json', function (d) {
+            console.log(d);
+            var svg = d3.select("svg");
+            var footText = d.description;
+            d3.select('.foot').text(footText);
+            var data = d.data;
+            var dataLength = data.length;
+            console.log(dataLength);
+            var minTime = new Date(data[0][0]);
+            var maxTime = new Date(data[dataLength - 1][0]);
+            var maxData = d3.max(data, function (d) {
+                return d[1];
+            });
+            var getX = d3.scaleTime()
+                    .domain([minTime, maxTime])
+                    .range([0, 3.5 * dataLength]);
+            var getY = d3.scaleLinear()
+                    .domain([maxData, 0])//y轴从大到小
+                    .range([0, 450]);
+            var axisX = d3.axisBottom()
+                    .scale(getX)
+                    .ticks(d3.timeYear.every(5));
+            var axisY = d3.axisLeft()
+                    .scale(getY)
+                    .ticks(10);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(80,475)")
+                    .call(axisX);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(80,25)")
+                    .call(axisY);
+            svg.append('text')
+                    .text("DGP, USA")
+                    .attr("transform", "rotate(-90)")
+                    .attr('dx', '-80')
+                    .attr('dy', '100');
+            svg.selectAll(".MyRect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "MyRect")
+                    .attr("transform", "translate(80,25)")
+                    .attr("x", function (d, i) {
+                        return 3.5 * i;
+                    })
+                    .attr("y", function (d) {
+                        return getY(d[1]);
+                    })
+                    .attr("width", 3.5)
+                    .attr("height", function (d) {
+                        return 450 - getY(d[1]);
+                    })
+                    .on('mouseover', function (d) {
+                        d3.select(this)
+                                .classed('focus', true);
+                        var time = new Date(d[0]);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        d3.select(".detail")
+                                .text(time.getFullYear()+"年"+(time.getMonth()+1)+"月"+"    "+d[1]+"$")
+                                .transition(t)
+                                .style("color","#5fa0bd");
+                    })
+                    .on('mouseout', function () {
+                        d3.select(this)
+                                .classed('focus', false);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        d3.select(".detail")
+                                .transition(t)
+                                .style("color","white");
+                    });
+        })
+    });
+</script>
+</body>
+</html>
