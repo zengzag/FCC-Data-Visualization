@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scatterplot Graph</title>
+    <!--<script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.js"></script>-->
+    <!--<script src="http://cdn.bootcss.com/d3/4.2.2/d3.js"></script>-->
+    <script src="jquery.js"></script>
+    <script src="d3.js"></script>
+</head>
+<body>
+<style>
+    body * {
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+    body {
+        background-color: #dfdfdf;
+    }
+
+    .board {
+        margin: auto;
+        margin-top: 50px;
+        background-color: white;
+        text-align: center;
+        width: 1200px;
+        border-radius: 8px;
+        box-shadow: 3px 3px 5px #888888;
+    }
+
+    .head {
+        Padding-top: 20px;
+        color: #5fa0bd;
+    }
+
+    .detail {
+        position: absolute;
+        Padding: 15px;
+        /*top: 10px;*/
+        /*left: 800px;*/
+        background-color: black;
+        font-size: 20px;
+        font-weight: 500;
+        color: white;
+        opacity: 0;
+        border-radius: 6px;
+        text-align: center;
+        max-width: 300px;
+    }
+
+    svg {
+        width: 1100px;
+        height: 800px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 15px;
+    }
+
+    .doping {
+        fill: #5fa0bd;
+    }
+
+    .noDoping {
+        fill: black;
+    }
+
+    .focus {
+        fill: #dfdfdf;
+    }
+
+    .nameText {
+        font-size: 10px;
+    }
+</style>
+
+<div class="detail"></div>
+<div class="board">
+    <h1 class="head">自行车比赛前35名</h1>
+    <svg></svg>
+</div>
+
+<script>
+    $('document').ready(function () {
+        //d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json',function (d) {
+        d3.json('data.json', function (d) {
+            console.log(d);
+            var svg = d3.select("svg");
+            var data = d;
+            var dataLength = data.length;
+            var minTime = new Date("October 13, 1975 01:" + data[0].Time);
+            var maxTime = new Date("October 13, 1975 01:" + data[dataLength - 1].Time);
+            var formatTime = d3.timeFormat("%M:%S");
+            var getX = d3.scaleTime()
+                    .domain([minTime, maxTime])
+                    .range([0, 850]);
+            var getY = d3.scaleLinear()
+                    .domain([35, 0])//y轴从大到小
+                    .range([0, 700]);
+            var axisX = d3.axisBottom()
+                    .scale(getX)
+                    .ticks(5, formatTime);
+            var axisY = d3.axisLeft()
+                    .scale(getY)
+                    .ticks(10);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(80,750)")
+                    .call(axisX);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(80,50)")
+                    .call(axisY);
+            svg.append('text')
+                    .text("Placing")
+                    .attr("transform", "rotate(-90)")
+                    .attr('dx', '-80')
+                    .attr('dy', '100');
+
+            svg.selectAll(".myCircle")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("class", function (d, i) {
+                        if (d.Doping == "") {
+                            return "noDoping";
+                        } else {
+                            return "doping";
+                        }
+                    })
+                    .attr("transform", "translate(90,50)")
+                    .attr("cx", function (d, i) {
+                        return getX(new Date("October 13, 1975 01:" + d.Time));
+                    })
+                    .attr("cy", function (d, i) {
+                        return getY(d.Place);
+                    })
+                    .attr("r", "10")
+                    .on('mouseover', function (d) {
+                        d3.select(this)
+                                .classed('focus', true);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        var test = d.Name + ":" + d.Nationality + "<br/>" + "Year:" + d.Year + " " + "Time:" + d.Time + "<br/>" + "<br/>" + d.Doping;
+                        console.log(test);
+                        d3.select(".detail")
+                                .html(test)
+                                .style('top', function (d) {
+                                    return (d3.event.pageY + 10) + "px";
+                                })
+                                .style('left', function (d) {
+                                    return (d3.event.pageX + 20) + "px";
+                                })
+                                .transition(t)
+                                .style("opacity", "0.8");
+                    })
+                    .on('mouseout', function () {
+                        d3.select(this)
+                                .classed('focus', false);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        d3.select(".detail")
+                                .transition(t)
+                                .style("opacity", "0");
+                    });
+            svg.selectAll(".nameText")
+                    .data(data)
+                    .enter()
+                    .append("text", "nameText")
+                    .attr("class", "nameText")
+                    .text(function (d) {
+                        return d.Name;
+                    })
+                    .attr("transform", "translate(102,54)")
+                    .attr('x', function (d) {
+                        return getX(new Date("October 13, 1975 01:" + d.Time));
+                    })
+                    .attr('y', function (d) {
+                        return getY(d.Place);
+                    });
+        })
+    });
+</script>
+</body>
+</html>
