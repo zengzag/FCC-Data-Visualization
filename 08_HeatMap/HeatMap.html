@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heat Map</title>
+    <!--<script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.js"></script>-->
+    <!--<script src="http://cdn.bootcss.com/d3/4.2.2/d3.js"></script>-->
+    <script src="jquery.js"></script>
+    <script src="d3.js"></script>
+</head>
+<body>
+<style>
+    body * {
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+
+    body {
+        background-color: #dfdfdf;
+    }
+
+    .board {
+        margin: auto;
+        margin-top: 50px;
+        background-color: white;
+        text-align: center;
+        width: 1400px;
+        border-radius: 8px;
+        box-shadow: 3px 3px 5px #888888;
+    }
+
+    .head {
+        Padding-top: 20px;
+        font-size: 40px;
+        font-weight: 700;
+    }
+
+    .head2 {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .head3 {
+        font-size: 11px;
+    }
+
+    .detail {
+        position: absolute;
+        Padding: 15px;
+        /*top: 10px;*/
+        /*left: 800px;*/
+        background-color: black;
+        font-size: 20px;
+        font-weight: 500;
+        color: white;
+        opacity: 0;
+        border-radius: 6px;
+        text-align: center;
+        max-width: 300px;
+    }
+
+    svg {
+        width: 1400px;
+        height: 650px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-size: 15px;
+    }
+
+    .focus {
+        fill: #dfdfdf;
+    }
+</style>
+
+<div class="detail"></div>
+<div class="board">
+    <div class="head">全球每月气温变化图</div>
+    <div class="head2">1753 - 2015</div>
+    <div class="head3">Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980
+        average.<br/>
+        Estimated Jan 1951-Dec 1980 absolute temperature ℃: 8.66 +/- 0.07
+    </div>
+    <svg></svg>
+</div>
+
+<script>
+    $('document').ready(function () {
+        //d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',function (d) {
+        d3.json('data.json', function (d) {
+            var svg = d3.select("svg");
+            var baseTemperature = d.baseTemperature;
+            var data = d.monthlyVariance;
+            var eachRectHeight = 40;
+            var eachRectWidth = 4;
+            var colorList = ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026'];
+            var maxTemp = d3.max(data, function (d) {
+                        return d.variance;
+                    }) + baseTemperature;
+            var minTemp = d3.min(data, function (d) {
+                        return d.variance;
+                    }) + baseTemperature;
+            var minYear = data[0].year;
+            var maxYear = data[data.length - 1].year;
+            var getColor = d3.scaleQuantize()//获取温度对应颜色
+                    .domain([minTemp, maxTemp])
+                    .range(colorList);
+            var getX = d3.scaleLinear()
+                    .domain([minYear, maxYear])
+                    .range([0, (maxYear - minYear) * eachRectWidth]);
+            var getY = d3.scaleLinear()
+                    .domain([12, 0])//y轴1-12月
+                    .range([0, 12 * eachRectHeight]);
+            //坐标轴
+            var axisX = d3.axisBottom()
+                    .scale(getX)
+                    .ticks();
+            var axisY = d3.axisLeft()
+                    .scale(getY)
+                    .ticks(12);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(150,500)")
+                    .call(axisX);
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(150,20)")
+                    .call(axisY);
+            //坐标轴说明
+            svg.append('text')
+                    .text("Months")
+                    .attr("transform", "rotate(-90)")
+                    .attr('dx', '-300')
+                    .attr('dy', '120')
+                    .style("font-size", "20px")
+                    .style("font-weight", "600");
+            svg.append('text')
+                    .text("Years")
+                    .attr('dx', '650')
+                    .attr('dy', '550')
+                    .style("font-size", "20px")
+                    .style("font-weight", "600");
+            //颜色说明
+            var explanation = svg.selectAll(".explanation")
+                    .data(colorList)
+                    .enter()
+                    .append("g");
+            explanation.append("rect")
+                    .attr("x", function (d, i) {
+                        return 800 + 40 * i;
+                    })
+                    .attr("y", "550")
+                    .attr("width", "40")
+                    .attr("height", "20")
+                    .attr("fill", function (d, i) {
+                        return d;
+                    });
+            explanation.append("text")
+                    .attr("x", function (d, i) {
+                        return 810 + 40 * i;
+                    })
+                    .attr("y", "585")
+                    .text(function (d, i) {
+                        var temp = getColor.invertExtent(d);
+                        return d3.format(".3")(temp[1]);
+                    });
+            //直方图
+            svg.selectAll(".MyRect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("fill", function (d, i) {
+                        return getColor(d.variance + baseTemperature);
+                    })
+                    .attr("transform", "translate(150,20)")
+                    .attr("x", function (d, i) {
+                        return getX(d.year);
+                    })
+                    .attr("y", function (d) {
+                        return getY(d.month);
+                    })
+                    .attr("width", eachRectWidth)
+                    .attr("height", eachRectHeight)
+                    .on('mouseover', function (d) {
+                        d3.select(this)
+                                .classed('focus', true);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        var test = d.year+"年:"+d.month+"月<br/>" +d3.format(".4")(d.variance + baseTemperature)+"℃"+"<br/>"+d3.format(".4")(d.variance)+"℃";
+                        console.log(test);
+                        d3.select(".detail")
+                                .html(test)
+                                .style('top', function (d) {
+                                    return (d3.event.pageY + 10) + "px";
+                                })
+                                .style('left', function (d) {
+                                    return (d3.event.pageX + 20) + "px";
+                                })
+                                .transition(t)
+                                .style("opacity", "0.8");
+                    })
+                    .on('mouseout', function () {
+                        d3.select(this)
+                                .classed('focus', false);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        d3.select(".detail")
+                                .transition(t)
+                                .style("opacity", "0");
+                    });
+        });
+    });
+</script>
+</body>
+</html>
