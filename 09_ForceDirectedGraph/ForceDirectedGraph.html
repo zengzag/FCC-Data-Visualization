@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Force Directed Graph</title>
+    <!--<script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.js"></script>-->
+    <!--<script src="http://cdn.bootcss.com/d3/4.2.2/d3.js"></script>-->
+    <script src="jquery.js"></script>
+    <script src="d3.js"></script>
+    <link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/64467477/country%20data%20for%20force%20directed%20graph/flags.css"/>
+</head>
+<body>
+<style>
+    body * {
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+
+    body {
+        background-color: #dfdfdf;
+    }
+
+    .board {
+        margin: auto;
+        margin-top: 50px;
+        background-color: black;
+        text-align: center;
+        width: 1000px;
+        border-radius: 8px;
+        box-shadow: 3px 3px 5px #888888;
+        position: relative;
+    }
+
+    .head {
+        color: white;
+        Padding-top: 20px;
+        font-size: 40px;
+        font-weight: 700;
+    }
+
+    .detail {
+        position: absolute;
+        Padding: 5px;
+        /*top: 10px;*/
+        /*left: 800px;*/
+        background-color: black;
+        font-size: 10px;
+        font-weight: 400;
+        color: white;
+        opacity: 0;
+        border-radius: 3px;
+        text-align: center;
+        max-width: 300px;
+        z-index:1;
+    }
+
+    .focus {
+        fill: #dfdfdf;
+    }
+    .links line {
+        stroke: white;
+        stroke-width: 1px;
+    }
+
+    .imgBox{
+        position: absolute;
+    }
+    .flag{
+        position: absolute;
+    }
+</style>
+
+
+<div class="detail"></div>
+<div class="board">
+    <div class="imgBox"></div>
+    <div class="head">国家节点图</div>
+    <svg width="1000" height="800"></svg>
+</div>
+
+<script>
+    $('document').ready(function () {
+        var svg = d3.select("svg");
+        var     width = svg.attr("width");
+        var    height = svg.attr("height");
+        var simulation = d3.forceSimulation()
+                .force("link", d3.forceLink())
+                .force("charge", d3.forceManyBody().distanceMax(150).distanceMin(50).theta(0.5))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().strength(0));
+        //d3.json('https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json',function (d) {
+        d3.json('data1.json', function (graph) {
+            var nodes=graph.nodes;
+            var links=graph.links;
+            console.log(nodes);
+            console.log(links);
+            simulation.nodes(nodes)
+                    .on("tick", ticked);
+            simulation.force("link")
+                    .links(links);
+
+            var link = svg.append("g")
+                    .attr("class", "links")
+                    .selectAll("line")
+                    .data(links)
+                    .enter().append("line");
+
+            var node = d3.select(".imgBox")
+                    .selectAll("img")
+                    .data(nodes)
+                    .enter()
+                    .append("img")
+                    .attr("class",function (d) {
+                        return 'flag flag-' + d.code;
+                    })
+                    .style('top', function (d) {
+                        return  (d.y+72)+ "px";
+                    })
+                    .style('left', function (d) {
+                        return (d.x) + "px";
+                    })
+                    .on('mouseover', function (d) {
+                        d3.select(this)
+                                .classed('focus', true);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        var test = d.country;
+                        d3.select(".detail")
+                                .html(test)
+                                .style('top', function (d) {
+                                    return (d3.event.pageY) + "px";
+                                })
+                                .style('left', function (d) {
+                                    return (d3.event.pageX + 25) + "px";
+                                })
+                                .transition(t)
+                                .style("opacity", "0.8");
+                    })
+                    .on('mouseout', function () {
+                        d3.select(this)
+                                .classed('focus', false);
+                        var t = d3.transition()
+                                .duration(500)
+                                .ease(d3.easeLinear);
+                        d3.select(".detail")
+                                .transition(t)
+                                .style("opacity", "0");
+                    })
+                    .call(d3.drag()
+                            .on("start", dragstarted)
+                            .on("drag", dragged)
+                            .on("end", dragended));
+
+            function ticked() {
+                link
+                        .attr("x1", function(d) { return d.source.x; })
+                        .attr("y1", function(d) { return d.source.y; })
+                        .attr("x2", function(d) { return d.target.x; })
+                        .attr("y2", function(d) { return d.target.y; });
+
+                node
+                        .style("top", function(d) { return (d.y+72) + "px"; })
+                        .style("left", function(d) { return (d.x) + "px"; });
+            }
+
+        });
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.6).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+    });
+
+</script>
+</body>
+</html>
